@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package pb;
+
+option go_package="./;pb";
+
+message MessageRequest {
+    string name = 1;
+    string id = 2;
+}
+
+
+message MessageResponse {
+    string result = 1;
+}
+
+service BasicService {
+    rpc Create (MessageRequest) returns (MessageResponse){};
+    rpc Get (MessageRequest) returns (MessageResponse);
+    rpc Delete (MessageRequest) returns (MessageResponse);
+    rpc Update (MessageRequest) returns (MessageResponse);
+}
