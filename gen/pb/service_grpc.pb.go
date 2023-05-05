@@ -29,10 +29,10 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BasicServiceClient interface {
-	Create(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
-	Get(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
-	Delete(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
-	Update(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error)
+	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
+	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
+	Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error)
 }
 
 type basicServiceClient struct {
@@ -43,8 +43,8 @@ func NewBasicServiceClient(cc grpc.ClientConnInterface) BasicServiceClient {
 	return &basicServiceClient{cc}
 }
 
-func (c *basicServiceClient) Create(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
-	out := new(MessageResponse)
+func (c *basicServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
+	out := new(CreateResponse)
 	err := c.cc.Invoke(ctx, BasicService_Create_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -52,8 +52,8 @@ func (c *basicServiceClient) Create(ctx context.Context, in *MessageRequest, opt
 	return out, nil
 }
 
-func (c *basicServiceClient) Get(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
-	out := new(MessageResponse)
+func (c *basicServiceClient) Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error) {
+	out := new(GetResponse)
 	err := c.cc.Invoke(ctx, BasicService_Get_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -61,8 +61,8 @@ func (c *basicServiceClient) Get(ctx context.Context, in *MessageRequest, opts .
 	return out, nil
 }
 
-func (c *basicServiceClient) Delete(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
-	out := new(MessageResponse)
+func (c *basicServiceClient) Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error) {
+	out := new(DeleteResponse)
 	err := c.cc.Invoke(ctx, BasicService_Delete_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -70,8 +70,8 @@ func (c *basicServiceClient) Delete(ctx context.Context, in *MessageRequest, opt
 	return out, nil
 }
 
-func (c *basicServiceClient) Update(ctx context.Context, in *MessageRequest, opts ...grpc.CallOption) (*MessageResponse, error) {
-	out := new(MessageResponse)
+func (c *basicServiceClient) Update(ctx context.Context, in *UpdateRequest, opts ...grpc.CallOption) (*UpdateResponse, error) {
+	out := new(UpdateResponse)
 	err := c.cc.Invoke(ctx, BasicService_Update_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -83,10 +83,10 @@ func (c *basicServiceClient) Update(ctx context.Context, in *MessageRequest, opt
 // All implementations must embed UnimplementedBasicServiceServer
 // for forward compatibility
 type BasicServiceServer interface {
-	Create(context.Context, *MessageRequest) (*MessageResponse, error)
-	Get(context.Context, *MessageRequest) (*MessageResponse, error)
-	Delete(context.Context, *MessageRequest) (*MessageResponse, error)
-	Update(context.Context, *MessageRequest) (*MessageResponse, error)
+	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	Get(context.Context, *GetRequest) (*GetResponse, error)
+	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
+	Update(context.Context, *UpdateRequest) (*UpdateResponse, error)
 	mustEmbedUnimplementedBasicServiceServer()
 }
 
@@ -94,16 +94,16 @@ type BasicServiceServer interface {
 type UnimplementedBasicServiceServer struct {
 }
 
-func (UnimplementedBasicServiceServer) Create(context.Context, *MessageRequest) (*MessageResponse, error) {
+func (UnimplementedBasicServiceServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
-func (UnimplementedBasicServiceServer) Get(context.Context, *MessageRequest) (*MessageResponse, error) {
+func (UnimplementedBasicServiceServer) Get(context.Context, *GetRequest) (*GetResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Get not implemented")
 }
-func (UnimplementedBasicServiceServer) Delete(context.Context, *MessageRequest) (*MessageResponse, error) {
+func (UnimplementedBasicServiceServer) Delete(context.Context, *DeleteRequest) (*DeleteResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
-func (UnimplementedBasicServiceServer) Update(context.Context, *MessageRequest) (*MessageResponse, error) {
+func (UnimplementedBasicServiceServer) Update(context.Context, *UpdateRequest) (*UpdateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
 func (UnimplementedBasicServiceServer) mustEmbedUnimplementedBasicServiceServer() {}
@@ -120,7 +120,7 @@ func RegisterBasicServiceServer(s grpc.ServiceRegistrar, srv BasicServiceServer)
 }
 
 func _BasicService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MessageRequest)
+	in := new(CreateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -132,13 +132,13 @@ func _BasicService_Create_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: BasicService_Create_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BasicServiceServer).Create(ctx, req.(*MessageRequest))
+		return srv.(BasicServiceServer).Create(ctx, req.(*CreateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BasicService_Get_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MessageRequest)
+	in := new(GetRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -150,13 +150,13 @@ func _BasicService_Get_Handler(srv interface{}, ctx context.Context, dec func(in
 		FullMethod: BasicService_Get_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BasicServiceServer).Get(ctx, req.(*MessageRequest))
+		return srv.(BasicServiceServer).Get(ctx, req.(*GetRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BasicService_Delete_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MessageRequest)
+	in := new(DeleteRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -168,13 +168,13 @@ func _BasicService_Delete_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: BasicService_Delete_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BasicServiceServer).Delete(ctx, req.(*MessageRequest))
+		return srv.(BasicServiceServer).Delete(ctx, req.(*DeleteRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
 func _BasicService_Update_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(MessageRequest)
+	in := new(UpdateRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -186,7 +186,7 @@ func _BasicService_Update_Handler(srv interface{}, ctx context.Context, dec func
 		FullMethod: BasicService_Update_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(BasicServiceServer).Update(ctx, req.(*MessageRequest))
+		return srv.(BasicServiceServer).Update(ctx, req.(*UpdateRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
