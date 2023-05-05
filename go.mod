@@ -1,4 +1,4 @@
-module github.com/azar-intelops/grpc-code-gen
+module test
 
 go 1.20
 
