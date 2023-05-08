@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package pb;
+option go_package="./api/v1;pb";
+
+service {{ .ResourceName }}Service {
+    rpc Create{{ .ResourceName }} (Create{{ .ResourceName }}Request) returns (Create{{ .ResourceName }}Response) {}
+    rpc Get{{ .ResourceName }} (Get{{ .ResourceName }}Request) returns (Get{{ .ResourceName }}Response) {}
+    rpc Update{{ .ResourceName }} (Update{{ .ResourceName }}Request) returns (Update{{ .ResourceName }}Response) {}
+    rpc Delete{{ .ResourceName }} (Delete{{ .ResourceName }}Request) returns (Delete{{ .ResourceName }}Response) {}
+}
+
+message Create{{ .ResourceName }}Request {
+    {{ range .CreateFields }}
+    {{ .Type }} {{ .Name }} = {{ .Number }};
+    {{ end }}
+}
+
+message Create{{ .ResourceName }}Response {
+    // Define response message for creating a {{ .ResourceName }}
+}
+
+message Get{{ .ResourceName }}Request {
+    {{ range .ReadFields }}
+    {{ .Type }} {{ .Name }} = {{ .Number }};
+    {{ end }}
+}
+
+message Get{{ .ResourceName }}Response {
+    // Define response message for reading a {{ .ResourceName }}
+}
+
+message Update{{ .ResourceName }}Request {
+    {{ range .UpdateFields }}
+    {{ .Type }} {{ .Name }} = {{ .Number }};
+    {{ end }}
+}
+
+message Update{{ .ResourceName }}Response {
+    // Define response message for updating a {{ .ResourceName }}
+}
+
+message Delete{{ .ResourceName }}Request {
+    {{ range .DeleteFields }}
+    {{ .Type }} {{ .Name }} = {{ .Number }};
+    {{ end }}
+}
+
+message Delete{{ .ResourceName }}Response {
+    // Define response message for deleting a {{ .ResourceName }}
+}
