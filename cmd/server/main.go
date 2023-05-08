@@ -5,8 +5,9 @@ import (
 	"log"
 	"net"
 	"os"
-	"test/gen/pb"
-	"test/internal/server/controllers"
+
+	pb "test/gen/api/v1"
+	"test/pkg/grpc/server/controllers"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
@@ -18,6 +19,7 @@ var (
 )
 
 func main() {
+	
 	addr := fmt.Sprintf("%s:%s", host, port)
 	lis, err := net.Listen("tcp", addr)	
 	if err != nil {
