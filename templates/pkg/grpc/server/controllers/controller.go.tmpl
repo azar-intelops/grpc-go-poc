@@ -1,0 +1,19 @@
+package controllers
+
+import (
+	"context"
+	"fmt"
+	pb "github.com/{{.UserName}}/{{.RepositoryName}}/{{.NodeName}}/gen/api/v1"
+)
+
+type {{.ResourceName}}Server struct {
+	pb.Unimplemented{{.ResourceName}}ServiceServer
+}
+
+func New{{.ResourceName}}Server() *{{.ResourceName}}Server {
+    return &{{.ResourceName}}Server{}
+}
+
+func (s *{{.ResourceName}}Server) Get{{ .ResourceName }}(ctx context.Context, req *pb.Get{{ .ResourceName }}Request) (*pb.Get{{ .ResourceName }}Response, error) {
+
+}
