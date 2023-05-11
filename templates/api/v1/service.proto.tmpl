@@ -8,6 +8,7 @@ service {{ .ResourceName }}Service {
     rpc Get{{ .ResourceName }} (Get{{ .ResourceName }}Request) returns (Get{{ .ResourceName }}Response) {};
     rpc Update{{ .ResourceName }} (Update{{ .ResourceName }}Request) returns (Update{{ .ResourceName }}Response) {};
     rpc Delete{{ .ResourceName }} (Delete{{ .ResourceName }}Request) returns (Delete{{ .ResourceName }}Response) {};
+    rpc List{{ .ResourceName }}s (List{{ .ResourceName }}sRequest) returns (List{{ .ResourceName }}sResponse) {};
 }
 
 message {{.ResourceName}} {
@@ -46,4 +47,12 @@ message Delete{{ .ResourceName }}Request {
 
 message Delete{{ .ResourceName }}Response {
     string message = 1;
+}
+
+message List{{ .ResourceName }}sRequest {
+
+}
+
+message List{{ .ResourceName }}sResponse {
+    repeated {{.ResourceName}} {{.ResourceNameSingular}} = 1;
 }
