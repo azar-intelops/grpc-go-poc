@@ -20,13 +20,17 @@ func (userDao *UserDao) CreateUser(user *pb.User) error  {
 }
 
 func (userDao *UserDao) GetUser(id string) (*pb.User, error)  {
+	if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id can't be empty")
+	}
+
 	for _, user := range users {
 		if user.Id == id {
 			return user, nil
 		}
 	}
 
-	return nil, fmt.Errorf("user not found with id: %v", id)
+	return nil, status.Error(codes.Internal, "something went wrong")
 }
 
 func (userDao *UserDao) UpdateUser(id string, user *pb.User) (error)  {
@@ -47,13 +51,14 @@ func (userDao *UserDao) DeleteUser(id string) (error) {
 	if id == "" {
 		return status.Error(codes.InvalidArgument, "id can't be empty")
 	} 
+	
 	for idx, user := range users {
 		if user.Id == id {
 			users = append(users[:idx], users[idx+1:]...)
 			return nil
 		}
 	} 
-	return status.Error(codes.Internal, "something went well")
+	return status.Error(codes.Internal, "something went wrong")
 }
 
 func (userDao *UserDao) ListUser () ([]*pb.User, error) {

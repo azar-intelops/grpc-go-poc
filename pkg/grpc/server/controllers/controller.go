@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"context"
-	"fmt"
 	pb "test/gen/api/v1"
 	"test/pkg/grpc/server/services"
 
@@ -53,17 +52,19 @@ func (s *Server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, 
 
 func (s *Server) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	id := uuid.New()
+	userReq := req.GetUser()
+	
 	user := pb.User{
 		Id: id.String(),
-		Name: req.GetUser().GetName(),
-		Age: req.GetUser().GetAge(),
+		Name: userReq.GetName(),
+		Age: userReq.GetAge(),
 	}
 	if err := userService.CreateUser(&user); err != nil {
-		return nil, fmt.Errorf("unable to create the user")
+		return nil, err
 	}
 	
 	return &pb.CreateResponse{
-		Result: fmt.Sprintf("User with name: %s and age: %v was created! with id: %v", req.User.GetName(), req.User.GetAge(), user.Id),
+		Result: "User Created Successfully!",
 	}, nil
 }
 
@@ -72,7 +73,7 @@ func (s *Server) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteR
 
 	err := userService.DeleteUser(id)
 
-	fmt.Println(err)
+	// fmt.Println(err)
 	if err != nil {
 		return nil, err
 	}
