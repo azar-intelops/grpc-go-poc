@@ -17,13 +17,17 @@ func ({{.ResourceNameSingular}}Dao *{{.ResourceName}}Dao) Create{{.ResourceName}
 }
 
 func ({{.ResourceNameSingular}}Dao *{{.ResourceName}}Dao) Get{{.ResourceName}}(id string) (*pb.{{.ResourceName}}, error) {
+    if id == "" {
+		return nil, status.Error(codes.InvalidArgument, "id can't be empty")
+	}
+
 	for _, {{.ResourceNameSingular}} := range {{.ResourceNamePlural}} {
 		if {{.ResourceNameSingular}}.Id == id {
 			return {{.ResourceNameSingular}}, nil
 		}
 	}
 
-	return nil, status.Error(codes.InvalidArgument,"id can't be empty")
+	return nil, status.Error(codes.Internal,"something went wrong")
 }
 
 func ({{.ResourceNameSingular}}Dao *{{.ResourceName}}Dao) Update{{.ResourceName}}(id string, {{.ResourceNameSingular}} *pb.{{.ResourceName}}) error {
