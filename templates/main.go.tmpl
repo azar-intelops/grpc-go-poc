@@ -1,6 +1,7 @@
 package main
 
 import (
+	{{if .IsGRPCServer }}
 	"fmt"
 	"log"
 	"net"
@@ -11,14 +12,27 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/reflection"
+	{{else}}
+
+	"github.com/{{.UserName}}/{{.RepositoryName}}/{{.NodeName}}/pkg/grpc/client"
+
+	{{end}}
 )
 
+{{if .IsGRPCServer }}
 var (
 	host = "localhost"
-	port = "{{.RestServerPort}}"
+	port = "{{.gRPCServerPort}}"
 )
+{{else}}
+var (
+	host = "localhost:"
+	port =  "{{.gRPCServerPort}}"
+)
+{{end}}
 
 func main() {
+	{{if .IsGRPCServer }}
 	// Set up the TCP listener
 	addr := fmt.Sprintf("%s:%s", host, port)
 	lis, err := net.Listen("tcp", addr)
@@ -46,4 +60,9 @@ func main() {
 		log.Println("Error serving gRPC:", err)
 		os.Exit(1)
 	}
+	{{end}}
+
+	{{if .IsGRPCClient }}
+    client.Execute()
+    {{end}}	
 }
