@@ -36,6 +36,12 @@ func NewServer() *Server {
 	}
 }
 
+func (s *Server) Ping(ctx context.Context, req *pb.Request) (*pb.Response, error) {
+	return &pb.Response{
+		Message: "Server is healthy and Working!",
+	}, nil
+}
+
 func (s *Server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
 	id := req.GetId()
 	if id != "" {

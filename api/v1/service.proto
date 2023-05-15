@@ -50,8 +50,14 @@ message ListRequest {
 message ListResponse {
     repeated User user = 1;
 }
+message Request {}
+
+message Response {
+    string message = 1;
+}
 
 service BasicService {
+    rpc Ping (Request) returns (Response){};
     rpc Create (CreateRequest) returns (CreateResponse){};
     rpc Get (GetRequest) returns (GetResponse);
     rpc Delete (DeleteRequest) returns (DeleteResponse);

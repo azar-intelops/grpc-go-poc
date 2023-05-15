@@ -19,6 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
+	BasicService_Ping_FullMethodName   = "/pb.BasicService/Ping"
 	BasicService_Create_FullMethodName = "/pb.BasicService/Create"
 	BasicService_Get_FullMethodName    = "/pb.BasicService/Get"
 	BasicService_Delete_FullMethodName = "/pb.BasicService/Delete"
@@ -30,6 +31,7 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type BasicServiceClient interface {
+	Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	Get(ctx context.Context, in *GetRequest, opts ...grpc.CallOption) (*GetResponse, error)
 	Delete(ctx context.Context, in *DeleteRequest, opts ...grpc.CallOption) (*DeleteResponse, error)
@@ -43,6 +45,15 @@ type basicServiceClient struct {
 
 func NewBasicServiceClient(cc grpc.ClientConnInterface) BasicServiceClient {
 	return &basicServiceClient{cc}
+}
+
+func (c *basicServiceClient) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
+	out := new(Response)
+	err := c.cc.Invoke(ctx, BasicService_Ping_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *basicServiceClient) Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error) {
@@ -94,6 +105,7 @@ func (c *basicServiceClient) List(ctx context.Context, in *ListRequest, opts ...
 // All implementations must embed UnimplementedBasicServiceServer
 // for forward compatibility
 type BasicServiceServer interface {
+	Ping(context.Context, *Request) (*Response, error)
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	Get(context.Context, *GetRequest) (*GetResponse, error)
 	Delete(context.Context, *DeleteRequest) (*DeleteResponse, error)
@@ -106,6 +118,9 @@ type BasicServiceServer interface {
 type UnimplementedBasicServiceServer struct {
 }
 
+func (UnimplementedBasicServiceServer) Ping(context.Context, *Request) (*Response, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Ping not implemented")
+}
 func (UnimplementedBasicServiceServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
@@ -132,6 +147,24 @@ type UnsafeBasicServiceServer interface {
 
 func RegisterBasicServiceServer(s grpc.ServiceRegistrar, srv BasicServiceServer) {
 	s.RegisterService(&BasicService_ServiceDesc, srv)
+}
+
+func _BasicService_Ping_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Request)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BasicServiceServer).Ping(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: BasicService_Ping_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BasicServiceServer).Ping(ctx, req.(*Request))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _BasicService_Create_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -231,6 +264,10 @@ var BasicService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "pb.BasicService",
 	HandlerType: (*BasicServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "Ping",
+			Handler:    _BasicService_Ping_Handler,
+		},
 		{
 			MethodName: "Create",
 			Handler:    _BasicService_Create_Handler,

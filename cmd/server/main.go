@@ -19,9 +19,9 @@ var (
 )
 
 func main() {
-	
+
 	addr := fmt.Sprintf("%s:%s", host, port)
-	lis, err := net.Listen("tcp", addr)	
+	lis, err := net.Listen("tcp", addr)
 	if err != nil {
 		log.Println("error starting tcp listener: ", err)
 		os.Exit(1)
