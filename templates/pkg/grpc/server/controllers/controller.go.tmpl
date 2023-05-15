@@ -21,6 +21,14 @@ func New{{.ResourceName}}Server() *{{.ResourceName}}Server {
 	return &{{.ResourceName}}Server{}
 }
 
+func (s *{{.ResourceName}}Server) Ping(ctx context.Context,req *pb.Request ) (*pb.Response, error) {
+
+	return &pb.Response{
+		Message:"Server is healthy and working!",
+	}, nil
+
+}
+
 func (s *{{.ResourceName}}Server) Get{{.ResourceName}}(ctx context.Context,req *pb.Get{{.ResourceName}}Request ) (*pb.Get{{.ResourceName}}Response, error) {
 	id := req.GetId()
 	{{.ResourceNameSingular}},err := {{.ResourceNameSingular}}Service.Get{{.ResourceName}}(id)
