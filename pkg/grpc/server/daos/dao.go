@@ -2,7 +2,6 @@ package daos
 
 import (
 	"fmt"
-	pb "test/gen/api/v1"
 	"test/pkg/grpc/server/models"
 
 	"google.golang.org/grpc/codes"
@@ -15,48 +14,33 @@ type UserDao struct {
 
 }
 
-func (userDao *UserDao) CreateUser(user *pb.User) error  {
-	newUser := models.User{
-		Id: user.Id,
-		Name: user.Name,
-		Age: user.Age,
-	}
-	users = append(users, newUser)
+func (userDao *UserDao) CreateUser(user models.User) error  {
+	users = append(users, user)
 	return nil
 }
 
-func (userDao *UserDao) GetUser(id string) (*pb.User, error)  {
+func (userDao *UserDao) GetUser(id string) (models.User, error)  {
 	if id == "" {
-		return nil, status.Error(codes.InvalidArgument, "id can't be empty")
+		return models.User{}, status.Error(codes.InvalidArgument, "id can't be empty")
 	}
 
 	for _, user := range users {
 		if user.Id == id {
-			return &pb.User{
-				Id: user.Id,
-				Name: user.Name,
-				Age: user.Age,
-			}, nil
+			return user, nil
 		}
 	}
 
-	return nil, status.Error(codes.Internal, "something went wrong")
+	return models.User{}, status.Error(codes.Internal, "something went wrong")
 }
 
-func (userDao *UserDao) UpdateUser(id string, user *pb.User) (error)  {
+func (userDao *UserDao) UpdateUser(id string, user models.User) (error)  {
 	if id == "" {
 		return status.Error(codes.InvalidArgument, "id can't be empty")
 	}
 
-	newUser := models.User{
-		Id: user.Id,
-		Name: user.Name,
-		Age: user.Age,
-	}
-
 	for idx, usr := range users {
 		if usr.Id == id{
-			users[idx] = newUser
+			users[idx] = user
 			return nil
 		}
 	}
@@ -77,19 +61,10 @@ func (userDao *UserDao) DeleteUser(id string) (error) {
 	return status.Error(codes.Internal, "something went wrong")
 }
 
-func (userDao *UserDao) ListUser () ([]*pb.User, error) {
+func (userDao *UserDao) ListUser () ([]models.User, error) {
 	if len(users) < 1 {
-		return []*pb.User{}, fmt.Errorf("data is empty %v", users )
+		return []models.User{}, fmt.Errorf("data is empty %v", users )
 	}
 
-	var userList []*pb.User
-	for _, user := range users {
-		userList = append(userList, &pb.User{
-			Id: user.Id,
-			Name: user.Name,
-			Age: user.Age,
-		})
-	}
-
-	return userList, nil
+	return users, nil
 }

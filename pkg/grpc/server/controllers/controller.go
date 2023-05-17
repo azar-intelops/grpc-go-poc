@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	pb "test/gen/api/v1"
+	"test/pkg/grpc/server/models"
 	"test/pkg/grpc/server/services"
 
 	"github.com/google/uuid"
@@ -17,17 +18,17 @@ type Server struct {
 }
 
 func NewServer() *Server {
-	userService.CreateUser(&pb.User{
+	userService.CreateUser(models.User{
 		Id:uuid.New().String(),
 		Name:"azar",
 		Age: 24,
 	})
-	userService.CreateUser(&pb.User{
+	userService.CreateUser(models.User{
 		Id:uuid.New().String(),
 		Name:"munnar",
 		Age: 25,
 	})
-	userService.CreateUser(&pb.User{
+	userService.CreateUser(models.User{
 		Id:uuid.New().String(),
 		Name:"krazt",
 		Age: 29,
@@ -42,6 +43,47 @@ func (s *Server) Ping(ctx context.Context, req *pb.Request) (*pb.Response, error
 	}, nil
 }
 
+func (s *Server) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
+	id := uuid.New().String()
+	userReq := req.GetUser()
+	
+	user := models.User{
+		Id: id,
+		Name: userReq.GetName(),
+		Age: userReq.GetAge(),
+	}
+
+	if err := userService.CreateUser(user); err != nil {
+		return nil, err
+	}
+	
+	return &pb.CreateResponse{
+		Result: "User Created Successfully!",
+	}, nil
+}
+
+func (s *Server) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
+	users, err := userService.ListUsers()
+
+	if err != nil {
+		return nil, err
+	}
+
+	var userList []*pb.User
+
+	for _, user := range users{
+		userList = append(userList, &pb.User{
+			Id: user.Id,
+			Name: user.Name,
+			Age: user.Age,
+		})
+	}
+
+	return &pb.ListResponse{
+		User: userList,
+	}, nil
+}
+
 func (s *Server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, error) {
 	id := req.GetId()
 	if id != "" {
@@ -50,28 +92,14 @@ func (s *Server) Get(ctx context.Context, req *pb.GetRequest) (*pb.GetResponse, 
 			return nil, err
 		}
 		return &pb.GetResponse{
-			User: user,
+			User: &pb.User{
+				Id: user.Id,
+				Name: user.Name,
+				Age: user.Age,
+			},
 		}, nil
 	}
 	return nil, status.Error(codes.Internal, "Data not found!")
-}
-
-func (s *Server) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
-	id := uuid.New()
-	userReq := req.GetUser()
-	
-	user := pb.User{
-		Id: id.String(),
-		Name: userReq.GetName(),
-		Age: userReq.GetAge(),
-	}
-	if err := userService.CreateUser(&user); err != nil {
-		return nil, err
-	}
-	
-	return &pb.CreateResponse{
-		Result: "User Created Successfully!",
-	}, nil
 }
 
 func (s *Server) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteResponse, error) {
@@ -90,7 +118,13 @@ func (s *Server) Delete(ctx context.Context, req *pb.DeleteRequest) (*pb.DeleteR
 }
 
 func (s *Server) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateResponse, error)  {
-	err := userService.UpdateUser(req.Id, req.GetUser())
+	request := req.GetUser()
+	response := models.User{
+		Id: request.Id,
+		Name: request.GetName(),
+		Age: request.GetAge(),
+	}
+	err := userService.UpdateUser(req.Id, response)
 	if err != nil {
 		return nil, err
 	}
@@ -99,14 +133,3 @@ func (s *Server) Update(ctx context.Context, req *pb.UpdateRequest) (*pb.UpdateR
 	}, nil
 }
 
-func (s *Server) List(ctx context.Context, req *pb.ListRequest) (*pb.ListResponse, error) {
-	users, err := userService.ListUsers()
-
-	if err != nil {
-		return nil, err
-	}
-
-	return &pb.ListResponse{
-		User: users,
-	}, nil
-}

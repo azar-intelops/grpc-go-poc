@@ -1,8 +1,8 @@
 package services
 
 import (
-	pb "test/gen/api/v1"
 	"test/pkg/grpc/server/daos"
+	"test/pkg/grpc/server/models"
 )
 
 type UserService struct{
@@ -11,19 +11,19 @@ type UserService struct{
 
 var userDao = daos.UserDao{}
 
-func (userService *UserService) CreateUser(user *pb.User) error  {
+func (userService *UserService) CreateUser(user models.User) error  {
 	return userDao.CreateUser(user)
 }
 
-func (userService *UserService) GetUser(id string) (*pb.User, error)  {
+func (userService *UserService) GetUser(id string) (models.User, error)  {
 	return userDao.GetUser(id)
 }
 
-func (userService *UserService) ListUsers() ([]*pb.User, error)  {
+func (userService *UserService) ListUsers() ([]models.User, error)  {
 	return userDao.ListUser()
 }
 
-func (userService *UserService) UpdateUser(id string, user *pb.User) (error)  {
+func (userService *UserService) UpdateUser(id string, user models.User) (error)  {
 	return userDao.UpdateUser(id, user)
 }
 
